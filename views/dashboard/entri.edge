@@ -120,37 +120,34 @@
         </button>
     </header>
 
-    <main class="container mt-3">
-
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h1 class="display-6 fw-bold">Rp 12.345.678</h1>
-                <p class="text-muted">Saldo Kamu</p>
-            </div>
+    <main class="container mt-4">
+        <div class="card p-4 shadow-sm">
+            <h4 class="text-center mb-3">Tambah Transaksi</h4>
+            <form>
+                <div class="mb-3">
+                    <label>Tanggal</label>
+                    <input type="date" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Deskripsi</label>
+                    <input type="text" class="form-control" placeholder="Contoh: Gaji, Bensin, dll">
+                </div>
+                <div class="mb-3">
+                    <label>Jumlah</label>
+                    <input type="number" class="form-control" placeholder="Rp 0">
+                </div>
+                <div class="mb-3">
+                    <label>Tipe</label>
+                    <select class="form-select">
+                        <option value="income">Pemasukan</option>
+                        <option value="expense">Pengeluaran</option>
+                    </select>
+                </div>
+                <button class="btn btn-success w-100">Simpan</button>
+            </form>
         </div>
-
-        <div class="row text-center mt-4">
-            <div class="col-4">
-                <a href="#" class="text-decoration-none text-dark dark-link">
-                    <i class="bi bi-plus-circle-fill fs-3 text-success"></i>
-                    <div>Tambah</div>
-                </a>
-            </div>
-            <div class="col-4">
-                <a href="#" class="text-decoration-none text-dark dark-link">
-                    <i class="bi bi-bar-chart-fill fs-3 text-primary"></i>
-                    <div>Laporan</div>
-                </a>
-            </div>
-            <div class="col-4">
-                <a href="#" class="text-decoration-none text-dark dark-link">
-                    <i class="bi bi-person-circle fs-3 text-secondary"></i>
-                    <div>Profile</div>
-                </a>
-            </div>
-        </div>
-
     </main>
+      
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">

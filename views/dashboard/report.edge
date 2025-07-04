@@ -109,6 +109,21 @@
         .theme-toggle:hover {
             transform: scale(1.1);
         }
+
+        .dark-mode .list-group-item {
+  background-color: #1f1f1f;
+  color: #f1f1f1;
+  border-color: #333;
+}
+
+.dark-mode .list-group-item small {
+  color: #bbb !important;
+}
+
+.dark-mode .text-muted {
+  color: #999 !important;
+}
+
     </style>
 </head>
 
@@ -120,37 +135,81 @@
         </button>
     </header>
 
-    <main class="container mt-3">
+    {{--  <main class="container mt-4">
+        <h4 class="mb-3">Laporan Keuangan</h4>
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between">
+                <span>Gaji</span><span class="text-success">+ Rp 5.000.000</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <span>Bensin</span><span class="text-danger">- Rp 150.000</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+                <span>Makan</span><span class="text-danger">- Rp 75.000</span>
+            </li>
+        </ul>
+    </main>  --}}
 
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h1 class="display-6 fw-bold">Rp 12.345.678</h1>
-                <p class="text-muted">Saldo Kamu</p>
-            </div>
-        </div>
 
-        <div class="row text-center mt-4">
-            <div class="col-4">
-                <a href="#" class="text-decoration-none text-dark dark-link">
-                    <i class="bi bi-plus-circle-fill fs-3 text-success"></i>
-                    <div>Tambah</div>
-                </a>
-            </div>
-            <div class="col-4">
-                <a href="#" class="text-decoration-none text-dark dark-link">
-                    <i class="bi bi-bar-chart-fill fs-3 text-primary"></i>
-                    <div>Laporan</div>
-                </a>
-            </div>
-            <div class="col-4">
-                <a href="#" class="text-decoration-none text-dark dark-link">
-                    <i class="bi bi-person-circle fs-3 text-secondary"></i>
-                    <div>Profile</div>
-                </a>
-            </div>
-        </div>
+<main class="container mt-4">
+    <h5 class="mb-3">Transaksi Terbaru</h5>
 
-    </main>
+    <ul class="list-group">
+
+        <!-- Item Masuk -->
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fw-bold">Gaji Bulanan</div>
+                <small class="text-success">Pemasukan</small>
+            </div>
+            <div class="text-end">
+                <span class="fw-bold text-success">+ Rp 5.000.000</span><br>
+                <small class="text-muted">01 Agu 2024</small>
+            </div>
+        </li>
+
+        <!-- Item Keluar -->
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fw-bold">Makan Siang</div>
+                <small class="text-danger">Pengeluaran</small>
+            </div>
+            <div class="text-end">
+                <span class="fw-bold text-danger">- Rp 75.000</span><br>
+                <small class="text-muted">02 Agu 2024</small>
+            </div>
+        </li>
+
+        <!-- Item Masuk -->
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fw-bold">Freelance</div>
+                <small class="text-success">Pemasukan</small>
+            </div>
+            <div class="text-end">
+                <span class="fw-bold text-success">+ Rp 1.200.000</span><br>
+                <small class="text-muted">03 Agu 2024</small>
+            </div>
+        </li>
+
+        <!-- Item Keluar -->
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fw-bold">Bayar Listrik</div>
+                <small class="text-danger">Pengeluaran</small>
+            </div>
+            <div class="text-end">
+                <span class="fw-bold text-danger">- Rp 400.000</span><br>
+                <small class="text-muted">04 Agu 2024</small>
+            </div>
+        </li>
+
+    </ul>
+</main>
+  
+      
+
+
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
