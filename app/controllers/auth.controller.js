@@ -4,7 +4,7 @@ import { LoginValidate } from "../validations/auth.validation.js";
 import prisma from "../../prisma/client.js";
 import bcrypt from "bcrypt";
 
-class AuthController {
+class authController {
     async loginView(req, res) {
         return render('auth/login', {}, req, res);
     }
@@ -81,4 +81,4 @@ class AuthController {
     }
 }
 
-export default new AuthController();
+export default new authController();

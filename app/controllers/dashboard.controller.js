@@ -1,6 +1,6 @@
 import { render } from "../config/view.js";
 
-class DashboardController {
+class dashboardController {
     async index(req, res) {
         const data = {
             title: "Cash App",
@@ -10,4 +10,4 @@ class DashboardController {
     }
 }
 
-export default new DashboardController();
+export default new dashboardController();

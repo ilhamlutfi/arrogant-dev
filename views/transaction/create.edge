@@ -1,31 +1,71 @@
 @layout.template({ title: "Tambah Transaksi" })
 
+@slot('css')
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/sweetalert2.min.css">
+@end
+
 @slot('content')
 <div class="card p-4 shadow-sm">
     <h4 class="text-center mb-3">Tambah Transaksi</h4>
-    <form>
+    <form action="/transactions" id="transactionForm" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
         <div class="mb-3">
-            <label>Tanggal</label>
-            <input type="date" class="form-control">
+            <label class="form-label">Tanggal</label>
+            <input type="date" name="transactionDate" class="form-control input-style">
+            <div class="invalid-feedback" id="error-transactionDate"></div>
         </div>
+    
         <div class="mb-3">
-            <label>Deskripsi</label>
-            <input type="text" class="form-control" placeholder="Contoh: Gaji, Bensin, dll">
+            <label class="form-label">Deskripsi</label>
+            <input type="text" name="description" class="form-control input-style" placeholder="Contoh: Gaji, Bensin, dll">
+            <div class="invalid-feedback" id="error-description"></div>
         </div>
+    
         <div class="mb-3">
-            <label>Jumlah</label>
-            <input type="number" class="form-control" placeholder="Rp 0">
+            <label class="form-label">Jumlah</label>
+            <input type="text" name="amount" class="form-control input-style" placeholder="Hanya angka: 00000">
+            <div class="invalid-feedback" id="error-amount"></div>
         </div>
+    
         <div class="mb-3">
-            <label>Tipe</label>
-            <select class="form-select">
+            <label class="form-label">Tipe</label>
+            <select name="type" class="form-select input-style">
+                <option value="">-- pilih --</option>
                 <option value="income">Pemasukan</option>
                 <option value="expense">Pengeluaran</option>
             </select>
+            <div class="invalid-feedback" id="error-type"></div>
         </div>
-        <button class="btn btn-success w-100">Simpan</button>
+    
+        <button type="submit" class="btn btn-success button-style w-100" data-original-text="Simpan">Simpan</button>
     </form>
+      
 </div>
 @endslot
 
+@slot('js')
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/sweetalert2.min.js"></script>
+
+<script src="/js/form-handler.js"></script>
+<script>
+    new FormHandler('#transactionForm', {
+        clearOnSuccess: true,
+        showSuccessToast: true,
+        onSuccess: function (res) {
+            if (res.success) {
+                // Delay redirect 2 detik
+                setTimeout(() => {
+                    window.location.href = res.redirect;
+                }, 1500);
+            }
+        }
+    });
+</script>
 @end
+
+@end
+

@@ -1,10 +1,10 @@
 import express from 'express';
-import AuthController from '../app/controllers/auth.controller.js';
+import authController from '../app/controllers/auth.controller.js';
 import { isAuthenticated, isNotAuthenticated } from '../app/middlewares/auth.middleware.js';
 
 const authRouter = express.Router();
 
-authRouter.get('/login', isAuthenticated, AuthController.loginView);
-authRouter.post('/login', AuthController.loginAttempt);
+authRouter.get('/login', isAuthenticated, authController.loginView);
+authRouter.post('/login', authController.loginAttempt);
 
 export default authRouter;
