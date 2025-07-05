@@ -6,7 +6,7 @@ class DashboardController {
             title: "Cash App",
         };
 
-        return render(req, res, 'dashboard/index', data);
+        return render('dashboard/index', data, req, res);
     }
 }
 

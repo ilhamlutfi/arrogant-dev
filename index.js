@@ -26,6 +26,9 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+// static file serving
+app.use(express.static(path.resolve('public')));
+
 // Routing
 app.use(router);
 

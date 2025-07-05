@@ -1,0 +1,31 @@
+@layout.template({ title: "Tambah Transaksi" })
+
+@slot('content')
+<div class="card p-4 shadow-sm">
+    <h4 class="text-center mb-3">Tambah Transaksi</h4>
+    <form>
+        <div class="mb-3">
+            <label>Tanggal</label>
+            <input type="date" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Deskripsi</label>
+            <input type="text" class="form-control" placeholder="Contoh: Gaji, Bensin, dll">
+        </div>
+        <div class="mb-3">
+            <label>Jumlah</label>
+            <input type="number" class="form-control" placeholder="Rp 0">
+        </div>
+        <div class="mb-3">
+            <label>Tipe</label>
+            <select class="form-select">
+                <option value="income">Pemasukan</option>
+                <option value="expense">Pengeluaran</option>
+            </select>
+        </div>
+        <button class="btn btn-success w-100">Simpan</button>
+    </form>
+</div>
+@endslot
+
+@end

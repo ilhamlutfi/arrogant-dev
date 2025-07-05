@@ -1,0 +1,22 @@
+@layout.template({ title: "Login" })
+
+@slot('content')
+<main class="container mt-4">
+    <div class="card p-4 shadow-sm">
+        <h4 class="text-center mb-3">Login</h4>
+        <form>
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" placeholder="Email Anda">
+            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" class="form-control" placeholder="Password">
+            </div>
+            <button class="btn btn-primary w-100">Masuk</button>
+        </form>
+    </div>
+</main>
+@endslot
+
+@end
