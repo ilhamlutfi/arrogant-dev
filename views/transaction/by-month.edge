@@ -1,0 +1,31 @@
+@layout.template({ title: 'Riwayat Transaksi Bulan ' + namaBulan })
+
+@slot('content')
+<main class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-3">Riwayat Transaksi Bulan {{ namaBulan }} {{ tahun }}</h5>
+        <a href="/transactions/archive" class="btn btn-sm btn-outline-secondary">Lihat arsip</a>
+    </div>
+
+    <ul class="list-group shadow-sm">
+        @each(item in transactions)
+        <li class="list-group-item d-flex justify-content-between align-items-center hover-shadow cursor-pointer"
+            onclick="window.location.href='/transaction/{{ item.id }}'">
+            <div>
+                <div class="fw-bold">{{ item.description }}</div>
+                <small class="{{ item.typeClass }}">{{ item.typeLabel }}</small>
+            </div>
+            <div class="text-end">
+                <span class="fw-bold {{ item.typeClass }}">
+                    {{ item.type === 'income' ? '+' : '-' }} {{ item.amountFormatted }}
+                </span>
+                <br>
+                <small class="text-muted">{{ item.transactionDateFormatted }}</small>
+            </div>
+        </li>
+        @end
+    </ul>
+</main>
+@endslot
+@end

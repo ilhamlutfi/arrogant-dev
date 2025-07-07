@@ -1,0 +1,36 @@
+@layout.template({ title: 'List Transaksi'})
+
+@slot('content')
+<main class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>Transaksi Terbaru</h5>
+        <a href="/transactions/archive" class="btn btn-sm btn-outline-secondary">Lihat Arsip</a>
+    </div>
+
+    <ul class="list-group shadow-sm">
+
+        <!-- Item Masuk -->
+        @each(item in transactions)
+        <li class="list-group-item d-flex justify-content-between align-items-center hover-shadow cursor-pointer"
+            onclick="window.location.href='/transaction/{{ item.id }}'">
+            <div>
+                <div class="fw-bold">{{ item.description }}</div>
+                <small class="{{ item.type === 'income' ? 'text-success' : 'text-danger' }}">
+                    {{ item.type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                </small>
+            </div>
+            <div class="text-end">
+                <span class="fw-bold {{ item.type === 'income' ? 'text-success' : 'text-danger' }}">
+                    {{ item.type === 'income' ? '+' : '-' }} {{ item.amountFormatted }}
+                </span>
+                <br>
+                <small class="text-muted">{{ item.transactionDateFormatted }}</small>
+            </div>
+        </li>
+        @end
+
+    </ul>
+</main>
+@endslot
+
+@end

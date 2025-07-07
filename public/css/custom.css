@@ -99,3 +99,25 @@ body {
 .theme-toggle:hover {
     transform: scale(1.1);
 }
+
+.dark-mode .list-group-item {
+    background-color: #1f1f1f;
+    color: #f1f1f1;
+    border-color: #333;
+}
+
+.dark-mode .list-group-item small {
+    color: #bbb !important;
+}
+
+.dark-mode .text-muted {
+    color: #999 !important;
+}
+
+.hover-shadow:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+.cursor-pointer {
+    cursor: pointer;
+}

@@ -2,17 +2,47 @@ import RequestValidator from "../config/validator.js";
 import { render } from "../config/view.js";
 import { storeTransactionValidate } from "../validations/transaction.validation.js";
 import prisma from "../../prisma/client.js";
+import TransactionService from "../services/transaction.service.js";
+import dayjs from "dayjs";
+import 'dayjs/locale/id.js';
 
 class transactionController {
-    async index(req, res) {
-        return render('transaction/index', {}, req, res);
+    constructor() {
+        this.transactionService = TransactionService;
+    } 
+
+    index = async (req, res) => {
+        return render('transaction/index', {
+            transactions: await this.transactionService.getLatestTransactions()
+        }, req, res);
     }
 
-    async create(req, res) {
+    archive = async (req, res) => {
+        return render('transaction/archive', {
+            archives: await this.transactionService.getArchivedMonths()
+        }, req, res);
+    }
+
+    byMonth = async (req, res) => {
+        const { year, month } = req.params;
+
+        const transactions = await this.transactionService.getByMonthYear(parseInt(month), parseInt(year));
+
+        const namaBulan = dayjs().month(month - 1).locale('id').format('MMMM');
+
+        return render('transaction/by-month', {
+            transactions,
+            bulan: month,
+            tahun: year,
+            namaBulan
+        }, req, res);
+    }
+
+    create = async (req, res) => {
         return render('transaction/create', {}, req, res);
     }
 
-    async store(req, res) {
+    store = async (req, res) => {
         try {
             const errors = await RequestValidator.validate(req, storeTransactionValidate.rules());
 
