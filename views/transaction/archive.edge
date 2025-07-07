@@ -1,4 +1,4 @@
-@layout.template({ title: 'List Transaksi'})
+@layout.template({ title: 'Riwayat List Transaksi'})
 
 @slot('content')
 <main class="container mt-4">
@@ -14,7 +14,7 @@
                 <div class="card border-0 shadow-sm h-100 transition hover-bg">
                     <div class="card-body text-center">
                         <i class="bi bi-calendar-event text-primary fs-3 mb-2"></i>
-                        <h6 class="fw-bold text-dark mb-0">{{ archive.namaBulan }} {{ archive.year }}</h6>
+                        <h6 class="fw-bold mb-0">{{ archive.namaBulan }} {{ archive.year }}</h6>
                     </div>
                 </div>
             </a>

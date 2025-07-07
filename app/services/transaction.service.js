@@ -13,6 +13,7 @@ class TransactionService {
     // transaksi terbaru
     getLatestTransactions = async () => {
         const currentMonthData = await prisma.transaction.findMany({
+            take: 10,
             where: {
                 createdAt: {
                     gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -38,6 +39,7 @@ class TransactionService {
     // arsip transaksi
     getArchivedMonths = async () => {
         const all = await prisma.transaction.findMany({
+            take: 10,
             select: {
                 createdAt: true
             },
@@ -64,30 +66,53 @@ class TransactionService {
     };
 
     // arsip perbulan
-    getByMonthYear = async (bulan, tahun) => {
-        const awalBulan = new Date(tahun, bulan - 1, 1);
-        const akhirBulan = new Date(tahun, bulan, 0, 23, 59, 59);
+    getTransactionsByMonth = async (year, month) => {
+        const start = new Date(year, month - 1, 1);
+        const end = new Date(year, month, 0, 23, 59, 59);
 
-        const transaksi = await prisma.transaction.findMany({
+        const transactions = await prisma.transaction.findMany({
+            take: 10,
             where: {
-                createdAt: {
-                    gte: awalBulan,
-                    lte: akhirBulan
+                transactionDate: {
+                    gte: start,
+                    lte: end,
                 },
             },
             orderBy: {
-                createdAt: 'desc'
-            }
+                transactionDate: 'desc',
+            },
         });
 
-        return transaksi.map(item => ({
-            ...item,
-            transactionDateFormatted: dayjs(item.transactionDate).locale('id').format('DD MMMM YYYY'),
-            amountFormatted: formatRupiah(item.amount),
-            typeClass: item.type === 'income' ? 'text-success' : 'text-danger',
-            typeLabel: item.type === 'income' ? 'Pemasukan' : 'Pengeluaran'
-        }));
+        let totalIncome = 0;
+        let totalExpense = 0;
+
+        const formatted = transactions.map(item => {
+            const isIncome = item.type === 'income';
+
+            // Gunakan nilai mentah amount, bukan hasil formatRupiah
+            if (isIncome) {
+                totalIncome += Number(item.amount); // ✅ Convert string to number
+            } else {
+                totalExpense += Number(item.amount); // ✅ Convert string to number
+            }
+
+            return {
+                ...item,
+                amountFormatted: formatRupiah(item.amount),
+                transactionDateFormatted: dayjs(item.transactionDate).locale('id').format('DD MMMM YYYY'),
+                typeClass: isIncome ? 'text-success' : 'text-danger',
+                typeLabel: isIncome ? 'Pemasukan' : 'Pengeluaran',
+            };
+        });
+
+        return {
+            transactions: formatted,
+            totalIncome: formatRupiah(totalIncome), // Format di akhir
+            totalExpense: formatRupiah(totalExpense),
+        };
     }
+    
+    
 }
 
 export default new TransactionService();

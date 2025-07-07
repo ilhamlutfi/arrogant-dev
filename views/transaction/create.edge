@@ -12,6 +12,16 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         <div class="mb-3">
+            <label class="form-label">Tipe</label>
+            <select name="type" class="form-select input-style">
+                <option value="">-- pilih --</option>
+                <option value="income">Pemasukan</option>
+                <option value="expense">Pengeluaran</option>
+            </select>
+            <div class="invalid-feedback" id="error-type"></div>
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Tanggal</label>
             <input type="date" name="transactionDate" class="form-control input-style">
             <div class="invalid-feedback" id="error-transactionDate"></div>
@@ -28,17 +38,7 @@
             <input type="text" name="amount" class="form-control input-style" placeholder="Hanya angka: 00000">
             <div class="invalid-feedback" id="error-amount"></div>
         </div>
-    
-        <div class="mb-3">
-            <label class="form-label">Tipe</label>
-            <select name="type" class="form-select input-style">
-                <option value="">-- pilih --</option>
-                <option value="income">Pemasukan</option>
-                <option value="expense">Pengeluaran</option>
-            </select>
-            <div class="invalid-feedback" id="error-type"></div>
-        </div>
-    
+      
         <button type="submit" class="btn btn-success button-style w-100" data-original-text="Simpan">Simpan</button>
     </form>
       

@@ -26,7 +26,7 @@ class transactionController {
     byMonth = async (req, res) => {
         const { year, month } = req.params;
 
-        const transactions = await this.transactionService.getByMonthYear(parseInt(month), parseInt(year));
+        const { transactions, totalIncome, totalExpense } = await this.transactionService.getTransactionsByMonth(year, month);
 
         const namaBulan = dayjs().month(month - 1).locale('id').format('MMMM');
 
@@ -34,7 +34,9 @@ class transactionController {
             transactions,
             bulan: month,
             tahun: year,
-            namaBulan
+            namaBulan,
+            totalIncome,
+            totalExpense
         }, req, res);
     }
 
@@ -53,7 +55,7 @@ class transactionController {
             }
 
             const { transactionDate, description, amount, type } = req.body;
-            const userId = req.session.user.id;
+            const userId = req.session?.user?.id || 1;
 
             const data = {
                 transactionDate: new Date(transactionDate),
@@ -70,7 +72,7 @@ class transactionController {
             return res.status(201).json({
                 success: true,
                 message: 'Berhasil menambahkan transaksi',
-                redirect: '/dashboard',
+                redirect: '/transactions',
                 transaction
             });
 
