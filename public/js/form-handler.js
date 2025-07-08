@@ -1,3 +1,45 @@
+// Toast bawaan SweetAlert2
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: toast => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+});
+
+// Fungsi untuk menampilkan error global dari server (422)
+function alertErrors(responseText) {
+  try {
+    const resJSON = typeof responseText === 'string' ? JSON.parse(responseText) : responseText;
+    const errors = resJSON.errors || {};
+    let errorText = '';
+
+    for (let key in errors) {
+      if (errors[key]?.msg) {
+        errorText = errors[key].msg;
+        break;
+      }
+      if (typeof errors[key] === 'string') {
+        errorText = errors[key];
+        break;
+      }
+    }
+
+    if (errorText) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Ops! Data Tidak Valid<br>' + errorText
+      });
+    }
+  } catch (e) {
+    console.error('Gagal parsing error:', e);
+  }
+}
+
 window.FormHandler = class {
   constructor(selector, options = {}) {
     this.form = $(selector);
@@ -16,7 +58,6 @@ window.FormHandler = class {
   init() {
     const self = this;
 
-    // Hapus validator lama (prevent duplikat)
     if (this.form.data('validator')) {
       this.form.validate('destroy');
     }
@@ -52,14 +93,9 @@ window.FormHandler = class {
             }
 
             if (self.showSuccessToast && window.Swal) {
-              Swal.fire({
+              Toast.fire({
                 icon: res.icon || 'success',
-                title: res.title || 'Berhasil',
-                text: res.message || 'Berhasil disimpan!',
-                toast: true,
-                position: 'top-end',
-                timer: 2000,
-                showConfirmButton: false
+                title: res.message || 'Berhasil disimpan!'
               });
             }
 
@@ -77,6 +113,8 @@ window.FormHandler = class {
                 input.addClass('is-invalid');
                 $(`#error-${field}`).text(errors[field].msg);
               }
+
+              alertErrors(xhr.responseJSON);
 
               if (self.customErrorHandler) {
                 self.customErrorHandler(errors);
@@ -98,7 +136,6 @@ window.FormHandler = class {
       }
     };
 
-    // Jalankan validasi hanya jika ada rules
     if (Object.keys(this.rules).length > 0) {
       validateOptions.rules = this.rules;
     }

@@ -1,4 +1,4 @@
-@layout.template({ title: "Tambah Transaksi" })
+@layout.template({ title: "Ubah Transaksi" })
 
 @slot('css')
     <link rel="stylesheet" href="/css/form.css">
@@ -7,35 +7,35 @@
 
 @slot('content')
 <div class="card p-4 shadow-sm">
-    <h4 class="text-center mb-3">Tambah Transaksi</h4>
-    <form action="/transactions" id="transactionForm" novalidate>
+    <h4 class="text-center mb-3">Ubah Transaksi</h4>
+    <form action="/transactions/{{ transaction.id }}?_method=PUT" id="transactionForm" novalidate>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         <div class="mb-3">
             <label class="form-label">Tipe</label>
             <select name="type" class="form-select input-style">
                 <option value="">-- pilih --</option>
-                <option value="income">Pemasukan</option>
-                <option value="expense">Pengeluaran</option>
+                <option value="income" {{ transaction.type === 'income' ? 'selected' : '' }}>Pemasukan</option>
+                <option value="expense" {{ transaction.type === 'expense' ? 'selected' : '' }}>Pengeluaran</option>
             </select>
             <div class="invalid-feedback" id="error-type"></div>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Tanggal</label>
-            <input type="date" name="transactionDate" class="form-control input-style" value="{{ new Date().toISOString().substr(0, 10) }}">
+            <input type="date" name="transactionDate" class="form-control input-style" value="{{ transaction.transactionDate }}">
             <div class="invalid-feedback" id="error-transactionDate"></div>
         </div>
     
         <div class="mb-3">
             <label class="form-label">Deskripsi</label>
-            <input type="text" name="description" class="form-control input-style" placeholder="Contoh: Gaji, Bensin, dll">
+            <input type="text" name="description" class="form-control input-style" placeholder="Contoh: Gaji, Bensin, dll" value="{{ transaction.description }}">
             <div class="invalid-feedback" id="error-description"></div>
         </div>
     
         <div class="mb-3">
             <label class="form-label">Jumlah</label>
-            <input type="text" name="amount" class="form-control input-style" placeholder="Hanya angka: 00000">
+            <input type="text" name="amount" class="form-control input-style" placeholder="Hanya angka: 00000" value="{{ transaction.amount }}">
             <div class="invalid-feedback" id="error-amount"></div>
         </div>
       
@@ -68,4 +68,5 @@
 @end
 
 @end
+
 

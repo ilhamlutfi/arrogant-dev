@@ -83,6 +83,59 @@ class transactionController {
             });
         }
     }
+
+    edit = async (req, res) => {
+        try {
+            const transaction = await this.transactionService.getTransactionById(req.params.id);
+
+            return render('transaction/edit', {
+                transaction: transaction
+            }, req, res);
+        } catch (error) {
+            if (error.message === 'NOT_FOUND') {
+                return res.status(404).send('<h1>Transaksi tidak ditemukan id: ' + req.params.id + '</h1>');
+            }
+
+            return res.status(500).send('<h1>Terjadi kesalahan: ' + error.message + '</h1>');
+        }
+    }
+
+    update = async (req, res) => {
+        try {
+            const errors = await RequestValidator.validate(req, storeTransactionValidate.rules());
+
+            if (errors) {
+                return res.status(422).json({
+                    errors
+                });
+            }
+
+            const { transactionDate, description, amount, type } = req.body;
+            const userId = req.session?.user?.id || 1;
+
+            const data = {
+                transactionDate: new Date(transactionDate),
+                description,
+                amount: parseFloat(amount),
+                type,
+                userId
+            };
+
+            const transaction = await this.transactionService.updateTransaction(req.params.id, data);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Berhasil merubah transaksi',
+                redirect: '/transactions',
+                transaction
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                message: 'Terjadi kesalahan: ' + error.message
+            });
+        }
+    }
 }
 
 export default new transactionController();

@@ -112,7 +112,49 @@ class TransactionService {
         };
     }
     
-    
+    // by id
+    getTransactionById = async (id) => {
+        const transaction = await prisma.transaction.findUnique({
+            where: {
+                id: parseInt(id)
+            }
+        });
+
+        if (!transaction) {
+            throw new Error('NOT_FOUND');
+        }
+
+        // format value
+        transaction.transactionDate = transaction.transactionDateFormatted = transaction.transactionDate.toISOString().slice(0, 10);
+
+        return transaction;
+    }
+
+    // 
+
+    // update
+    updateTransaction = async (id, data) => {
+         // Pastikan transaksi ada (kalau tidak, akan throw error)
+         await prisma.transaction.findUniqueOrThrow({
+            where: { id: parseInt(id) }
+        });
+
+        // Proses update
+        const updated = await prisma.transaction.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                transactionDate: new Date(data.transactionDate),
+                description: data.description,
+                amount: parseFloat(data.amount),
+                type: data.type,
+                userId: data.userId
+            }
+        });
+
+        return updated;
+    }
 }
 
 export default new TransactionService();
