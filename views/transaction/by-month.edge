@@ -1,6 +1,7 @@
 @layout.template({ title: 'Riwayat Transaksi Bulan ' + namaBulan })
 
 @slot('css')
+<meta name="csrf-token" content="{{ csrfToken }}">
 <link rel="stylesheet" href="/css/sweetalert2.min.css">
 @end
 
@@ -104,8 +105,11 @@
                 }).then((res) => {
                     if (res.isConfirmed) {
                         $.ajax({
-                            url: `/transaction/${id}`,
+                            url: `/transactions/${id}`,
                             method: 'DELETE',
+                            headers: {
+                                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                            },
                             success: function (response) {
                                 Swal.fire({
                                     icon: 'success',

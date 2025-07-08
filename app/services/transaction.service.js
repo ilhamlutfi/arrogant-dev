@@ -130,7 +130,11 @@ class TransactionService {
         return transaction;
     }
 
-    // 
+    // store
+    storeTransaction = async (data) => {
+        const transaction = await prisma.transaction.create({ data });
+        return transaction;
+    }
 
     // update
     updateTransaction = async (id, data) => {
@@ -154,6 +158,23 @@ class TransactionService {
         });
 
         return updated;
+    }
+
+    // delete
+    deleteTransaction = async (id) => {
+        // Pastikan transaksi ada (kalau tidak, akan throw error)
+        await prisma.transaction.findUniqueOrThrow({
+            where: { id: parseInt(id) }
+        });
+
+        // Proses delete
+        const deleted = await prisma.transaction.delete({
+            where: {
+                id: parseInt(id)
+            }
+        });
+
+        return deleted;
     }
 }
 

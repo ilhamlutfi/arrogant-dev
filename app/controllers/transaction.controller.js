@@ -65,15 +65,12 @@ class transactionController {
                 userId
             };
 
-            const transaction = await prisma.transaction.create({
-                data,
-            });
+            await this.transactionService.storeTransaction(data);
 
             return res.status(201).json({
                 success: true,
                 message: 'Berhasil menambahkan transaksi',
                 redirect: '/transactions',
-                transaction
             });
 
         } catch (error) {
@@ -127,9 +124,24 @@ class transactionController {
                 success: true,
                 message: 'Berhasil merubah transaksi',
                 redirect: '/transactions',
-                transaction
             });
 
+        } catch (error) {
+            return res.status(500).json({
+                message: 'Terjadi kesalahan: ' + error.message
+            });
+        }
+    }
+
+    destroy = async (req, res) => {
+        try {
+            await this.transactionService.deleteTransaction(req.params.id);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Berhasil menghapus transaksi',
+                redirect: '/transactions',
+            });
         } catch (error) {
             return res.status(500).json({
                 message: 'Terjadi kesalahan: ' + error.message

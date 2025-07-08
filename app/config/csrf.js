@@ -26,9 +26,22 @@ export const generateCsrfToken = (req, res, next) => {
 /**
  * Middleware untuk memverifikasi CSRF token
  */
+// export const verifyCsrfToken = (req, res, next) => {
+//     const secret = req.cookies['csrf-secret']; // Ambil secret dari cookie
+//     const token = req.body._csrf || req.query._csrf || req.headers['x-csrf-token'];
+
+//     if (!secret || !token || !tokens.verify(secret, token)) {
+//         return res.status(403).send('<h1>Invalid CSRF token</h1>');
+//     }
+
+//     next();
+// };
 export const verifyCsrfToken = (req, res, next) => {
-    const secret = req.cookies['csrf-secret']; // Ambil secret dari cookie
-    const token = req.body._csrf || req.query._csrf || req.headers['x-csrf-token'];
+    const secret = req.cookies['csrf-secret'];
+    const token =
+        (req.body && req.body._csrf) ||
+        req.query._csrf ||
+        req.headers['x-csrf-token'];
 
     if (!secret || !token || !tokens.verify(secret, token)) {
         return res.status(403).send('<h1>Invalid CSRF token</h1>');
