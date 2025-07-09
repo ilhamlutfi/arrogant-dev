@@ -1,6 +1,6 @@
 # 💰 Cash App - Express MVC Boilerplate
 
-Cash App adalah boilerplate Express.js bergaya MVC (Model-View-Controller) + Service Layer yang dibangun dengan:
+Cash App adalah boilerplate Express.js bergaya MVC (Model-View-Controller) + Service yang dibangun dengan:
 - Express 5
 - Prisma ORM
 - Edge.js View Engine
