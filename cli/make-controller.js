@@ -3,83 +3,61 @@
 import fs from 'fs';
 import path from 'path';
 import {
-    fileURLToPath
+  fileURLToPath
 } from 'url';
 
-// Setup __dirname untuk ES Module
+// Setup __dirname for ES Module
 const __filename = fileURLToPath(
-    import.meta.url);
+  import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Parsing argumen
+// Parse arguments
 const args = process.argv.slice(2);
 const rawName = args.find(arg => !arg.startsWith('-'));
 
 // Flags
 const useService = args.includes('-s') || args.includes('-sv') || args.includes('-vs');
 const useView = args.includes('-v') || args.includes('-sv') || args.includes('-vs');
+const force = args.includes('--force'); // 🆕 Tambahan
 
-// Validasi nama
+// Validate name
 if (!rawName) {
-    console.error('❌ Nama controller harus diisi. Contoh: npm run make:controller User [-s] [-v]');
-    process.exit(1);
+  console.error('❌ Controller name is required. Example: arrogant make:controller User [-s] [-v] [--force]');
+  process.exit(1);
 }
 
-// Parsing nama + path folder
-const pathParts = rawName.split(/[\\/]/); // mendukung slash dan backslash
+// Parse name + folder path
+const pathParts = rawName.split(/[\\/]/);
 const baseName = pathParts.pop();
 const folderPath = pathParts.join('/');
 const name = baseName.toLowerCase();
 const className = baseName.charAt(0).toUpperCase() + baseName.slice(1);
 
-// Path untuk controller
+// Path setup
 const controllerDir = path.join(__dirname, '../app/controllers', folderPath);
 const controllerFileName = `${name}.controller.js`;
 const controllerPath = path.join(controllerDir, controllerFileName);
+const viewDir = path.join(__dirname, '../views', folderPath || name);
 
-// Path untuk view
-const viewDir = path.join(__dirname, '../views', folderPath || name); // nama folder = nama controller jika tidak nested
-
-// Template standar controller
+// Controller Templates
 const standardTemplate = `
 // Controller: ${className}
 
 import { render } from "../config/view.js";
 
 class ${name}Controller {
-  index = async (req, res) => {
-    return render('${name}/index', {}, req, res);
-  };
-
-  create = async (req, res) => {
-    return render('${name}/create', {}, req, res);
-  };
-
-  store = async (req, res) => {
-    return res.json({ message: "store ${name}" });
-  };
-
-  show = async (req, res) => {
-    return res.json({ message: "show ${name} id " + req.params.id });
-  };
-
-  edit = async (req, res) => {
-    return render('${name}/edit', {}, req, res);
-  };
-
-  update = async (req, res) => {
-    return res.json({ message: "update ${name} id " + req.params.id });
-  };
-
-  destroy = async (req, res) => {
-    return res.json({ message: "delete ${name} id " + req.params.id });
-  };
+  index = async (req, res) => render('${name}/index', {}, req, res);
+  create = async (req, res) => render('${name}/create', {}, req, res);
+  store = async (req, res) => res.json({ message: "store ${name}" });
+  show = async (req, res) => res.json({ message: "show ${name} id " + req.params.id });
+  edit = async (req, res) => render('${name}/edit', {}, req, res);
+  update = async (req, res) => res.json({ message: "update ${name} id " + req.params.id });
+  destroy = async (req, res) => res.json({ message: "delete ${name} id " + req.params.id });
 }
 
 export default new ${name}Controller();
 `;
 
-// Template dengan service
 const serviceTemplate = `
 // Controller: ${className}
 
@@ -91,39 +69,13 @@ class ${name}Controller {
     this.service = ${className}Service;
   }
 
-  index = async (req, res) => {
-    const data = await this.service.getAll();
-    return render('${name}/index', { data }, req, res);
-  };
-
-  create = async (req, res) => {
-    return render('${name}/create', {}, req, res);
-  };
-
-  store = async (req, res) => {
-    await this.service.store(req.body);
-    return res.json({ message: "Data berhasil disimpan" });
-  };
-
-  show = async (req, res) => {
-    const item = await this.service.getById(req.params.id);
-    return res.json({ item });
-  };
-
-  edit = async (req, res) => {
-    const item = await this.service.getById(req.params.id);
-    return render('${name}/edit', { item }, req, res);
-  };
-
-  update = async (req, res) => {
-    await this.service.update(req.params.id, req.body);
-    return res.json({ message: "Data berhasil diupdate" });
-  };
-
-  destroy = async (req, res) => {
-    await this.service.delete(req.params.id);
-    return res.json({ message: "Data berhasil dihapus" });
-  };
+  index = async (req, res) => render('${name}/index', { data: await this.service.getAll() }, req, res);
+  create = async (req, res) => render('${name}/create', {}, req, res);
+  store = async (req, res) => { await this.service.store(req.body); res.json({ message: "Saved" }); };
+  show = async (req, res) => res.json({ item: await this.service.getById(req.params.id) });
+  edit = async (req, res) => render('${name}/edit', { item: await this.service.getById(req.params.id) }, req, res);
+  update = async (req, res) => { await this.service.update(req.params.id, req.body); res.json({ message: "Updated" }); };
+  destroy = async (req, res) => { await this.service.delete(req.params.id); res.json({ message: "Deleted" }); };
 }
 
 export default new ${name}Controller();
@@ -131,91 +83,66 @@ export default new ${name}Controller();
 
 const content = useService ? serviceTemplate : standardTemplate;
 
-// Buat direktori controller jika belum ada
+// Create controller directory
 fs.mkdirSync(controllerDir, {
-    recursive: true
+  recursive: true
 });
 
-// Cek file duplikat
-if (fs.existsSync(controllerPath)) {
-    console.error(`❌ File sudah ada: ${controllerPath}`);
-    process.exit(1);
+// 🧠 Check if controller already exists
+if (fs.existsSync(controllerPath) && !force) {
+  console.error(`❌ File already exists: ${controllerPath}`);
+  console.error(`👉 Use --force to overwrite.`);
+  process.exit(1);
 }
 
-// Tulis file controller
+// ✅ Write controller file (overwrite if --force)
 fs.writeFileSync(controllerPath, content);
-console.log(`✅ Controller berhasil dibuat: ${controllerPath}`);
-console.log(useService ? '✨ Dengan service' : '✨ Tanpa service');
+console.log(`✅ Controller ${force ? 'overwritten' : 'created'}: ${controllerPath}`);
+console.log(useService ? '✨ With service' : '✨ Without service');
 
-// 🔧 Tambahan: Buat folder view dan file index/create/edit.edge
+// 📄 Generate view if needed
 if (useView) {
-    const viewDir = path.join(__dirname, '../views', folderPath, name); // 👈 gunakan full path
-
-    fs.mkdirSync(viewDir, {
-        recursive: true
-    });
-
-    const viewFiles = ['index.edge', 'create.edge', 'edit.edge', 'show.edge'];
-    viewFiles.forEach(file => {
-        const viewFilePath = path.join(viewDir, file);
-        if (!fs.existsSync(viewFilePath)) {
-            fs.writeFileSync(viewFilePath, `<!-- ${file} view for ${className} -->`);
-        }
-    });
-
-    console.log(`📄 View berhasil dibuat di folder: ${viewDir}`);
+  const fullViewDir = path.join(__dirname, '../views', folderPath, name);
+  fs.mkdirSync(fullViewDir, {
+    recursive: true
+  });
+  ['index.edge', 'create.edge', 'edit.edge', 'show.edge'].forEach(file => {
+    const filePath = path.join(fullViewDir, file);
+    if (!fs.existsSync(filePath) || force) {
+      fs.writeFileSync(filePath, `<!-- ${file} view for ${className} -->`);
+    }
+  });
+  console.log(`📄 Views ${force ? 'overwritten' : 'created'} in: ${fullViewDir}`);
 }
 
-// Buat file service jika flag -s
+// 🛠️ Generate service if needed
 if (useService) {
-    const serviceDir = path.join(__dirname, '../app/services', folderPath);
-    const serviceFilePath = path.join(serviceDir, `${name}.service.js`);
+  const serviceDir = path.join(__dirname, '../app/services', folderPath);
+  const serviceFilePath = path.join(serviceDir, `${name}.service.js`);
 
-    const serviceTemplate = `
+  const serviceFileContent = `
   // Service: ${className}
-  
   import prisma from "../../prisma/client.js";
-  
+
   class ${className}Service {
-    getAll = async () => {
-      return await prisma.${name}.findMany();
-    };
-  
-    getById = async (id) => {
-      return await prisma.${name}.findUnique({
-        where: { id: parseInt(id) }
-      });
-    };
-  
-    store = async (data) => {
-      return await prisma.${name}.create({ data });
-    };
-  
-    update = async (id, data) => {
-      return await prisma.${name}.update({
-        where: { id: parseInt(id) },
-        data
-      });
-    };
-  
-    delete = async (id) => {
-      return await prisma.${name}.delete({
-        where: { id: parseInt(id) }
-      });
-    };
+    getAll = async () => await prisma.${name}.findMany();
+    getById = async (id) => await prisma.${name}.findUnique({ where: { id: parseInt(id) } });
+    store = async (data) => await prisma.${name}.create({ data });
+    update = async (id, data) => await prisma.${name}.update({ where: { id: parseInt(id) }, data });
+    delete = async (id) => await prisma.${name}.delete({ where: { id: parseInt(id) } });
   }
-  
+
   export default new ${className}Service();
   `;
 
-    fs.mkdirSync(serviceDir, {
-        recursive: true
-    });
+  fs.mkdirSync(serviceDir, {
+    recursive: true
+  });
 
-    if (!fs.existsSync(serviceFilePath)) {
-        fs.writeFileSync(serviceFilePath, serviceTemplate);
-        console.log(`🔧 Service berhasil dibuat: ${serviceFilePath}`);
-    } else {
-        console.log(`⚠️  Service sudah ada: ${serviceFilePath}`);
-    }
+  if (!fs.existsSync(serviceFilePath) || force) {
+    fs.writeFileSync(serviceFilePath, serviceFileContent);
+    console.log(`🔧 Service ${force ? 'overwritten' : 'created'}: ${serviceFilePath}`);
+  } else {
+    console.log(`⚠️  Service already exists: ${serviceFilePath}`);
+  }
 }

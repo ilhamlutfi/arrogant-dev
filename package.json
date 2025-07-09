@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "A minimal MVC framework for Express.js",
   "main": "index.js",
-  "arrogant": "./cli/arrogant.js",
+  "bin": {
+    "arrogant": "./cli/arrogant.js"
+  },
   "files": [
     "app",
     "cli",
