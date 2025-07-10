@@ -46,15 +46,34 @@ const standardTemplate = `
 import { render } from "../config/view.js";
 
 class ${name}Controller {
-  index = async (req, res) => render('${name}/index', {}, req, res);
-  create = async (req, res) => render('${name}/create', {}, req, res);
-  store = async (req, res) => res.json({ message: "store ${name}" });
-  show = async (req, res) => res.json({ message: "show ${name} id " + req.params.id });
-  edit = async (req, res) => render('${name}/edit', {}, req, res);
-  update = async (req, res) => res.json({ message: "update ${name} id " + req.params.id });
-  destroy = async (req, res) => res.json({ message: "delete ${name} id " + req.params.id });
-}
+  index = async (req, res) => {
+    return render('${name}/index', {}, req, res);
+  };
 
+  create = async (req, res) => {
+    return render('${name}/create', {}, req, res);
+  };
+
+  store = async (req, res) => {
+    return res.json({ message: "store ${name}" });
+  };
+
+  show = async (req, res) => {
+    return res.json({ message: "show ${name} id " + req.params.id });
+  };
+
+  edit = async (req, res) => {
+    return render('${name}/edit', {}, req, res);
+  };
+
+  update = async (req, res) => {
+    return res.json({ message: "update ${name} id " + req.params.id });
+  };
+
+  destroy = async (req, res) => {
+    return res.json({ message: "delete ${name} id " + req.params.id });
+  };
+}
 export default new ${name}Controller();
 `;
 
@@ -69,13 +88,39 @@ class ${name}Controller {
     this.service = ${className}Service;
   }
 
-  index = async (req, res) => render('${name}/index', { data: await this.service.getAll() }, req, res);
-  create = async (req, res) => render('${name}/create', {}, req, res);
-  store = async (req, res) => { await this.service.store(req.body); res.json({ message: "Saved" }); };
-  show = async (req, res) => res.json({ item: await this.service.getById(req.params.id) });
-  edit = async (req, res) => render('${name}/edit', { item: await this.service.getById(req.params.id) }, req, res);
-  update = async (req, res) => { await this.service.update(req.params.id, req.body); res.json({ message: "Updated" }); };
-  destroy = async (req, res) => { await this.service.delete(req.params.id); res.json({ message: "Deleted" }); };
+  async index(req, res) {
+    const data = await this.service.getAll();
+    return render('${name}/index', { data }, req, res);
+  }
+
+  async create(req, res) {
+    return render('${name}/create', {}, req, res);
+  }
+
+  async store(req, res) {
+    await this.service.store(req.body);
+    return res.json({ message: "Saved" });
+  }
+
+  async show(req, res) {
+    const item = await this.service.getById(req.params.id);
+    return res.json({ item });
+  }
+
+  async edit(req, res) {
+    const item = await this.service.getById(req.params.id);
+    return render('${name}/edit', { item }, req, res);
+  }
+
+  async update(req, res) {
+    await this.service.update(req.params.id, req.body);
+    return res.json({ message: "Updated" });
+  }
+
+  async destroy(req, res) {
+    await this.service.delete(req.params.id);
+    return res.json({ message: "Deleted" });
+  }
 }
 
 export default new ${name}Controller();
@@ -125,11 +170,32 @@ if (useService) {
   import prisma from "../../prisma/client.js";
 
   class ${className}Service {
-    getAll = async () => await prisma.${name}.findMany();
-    getById = async (id) => await prisma.${name}.findUnique({ where: { id: parseInt(id) } });
-    store = async (data) => await prisma.${name}.create({ data });
-    update = async (id, data) => await prisma.${name}.update({ where: { id: parseInt(id) }, data });
-    delete = async (id) => await prisma.${name}.delete({ where: { id: parseInt(id) } });
+    getAll = async () => {
+      return await prisma.${name}.findMany();
+    }
+
+    getById = async (id) => {
+      return await prisma.${name}.findUnique({
+        where: { id: parseInt(id) }
+      });
+    }
+
+    store = async (data) => {
+      return await prisma.${name}.create({ data });
+    }
+
+    update = async (id, data) => {
+      return await prisma.${name}.update({
+        where: { id: parseInt(id) },
+        data
+      });
+    }
+
+    delete = async (id) => {
+      return await prisma.${name}.delete({
+        where: { id: parseInt(id) }
+      });
+    }
   }
 
   export default new ${className}Service();

@@ -29,7 +29,7 @@ program
     .command('make:controller <name>')
     .option('-s, --service', 'Also create a service')
     .option('-v, --view', 'Also create views')
-    .option('--force', 'Overwrite existing files') // ✅ Added
+    .option('--force', 'Overwrite existing files')
     .description('Generate a new controller')
     .action((name, options) => {
         const args = [`"${name}"`];
@@ -54,7 +54,7 @@ program
 // 🧠 make:service
 program
     .command('make:service <name>')
-    .option('--force', 'Overwrite existing file') // ✅ Added
+    .option('--force', 'Overwrite existing file')
     .description('Generate a new service file')
     .action((name, options) => {
         const args = [`"${name}"`];
@@ -87,4 +87,15 @@ program
         });
     });
 
+// 🧠 dev
+program
+    .command('dev')
+    .description('Run dev script')
+    .action(() => {
+        execSync('npm run dev', {
+            stdio: 'inherit'
+        });
+    });
+
 program.parse();
+

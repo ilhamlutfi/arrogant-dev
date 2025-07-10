@@ -1,7 +1,7 @@
-// app.js
+// index.js
 import express from "express";
 import dotenv from "dotenv";
-import router from "./routes/main.route.js";
+import router from "./routes/web.route.js";
 import path from "path";
 import { Edge } from "edge.js";
 import cookieParser from 'cookie-parser';
@@ -20,33 +20,33 @@ const BASE_URL = process.env.BASE_URL || "http://localhost";
 const edge = Edge.create();
 
 // limiter
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 150,
-    message: 'Too many requests from this IP, please try again after 15 minutes.',
-    headers: true,
-});
+// const limiter = rateLimit({
+//     windowMs: 15 * 60 * 1000,
+//     max: 150,
+//     message: 'Too many requests from this IP, please try again after 15 minutes.',
+//     headers: true,
+// });
 
-app.use(limiter);
+// app.use(limiter);
 app.use(methodOverride("_method"));
-app.use(express.urlencoded({ extended: true })); // Middleware untuk parsing form data
-app.use(express.json()); // Middleware untuk parsing JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cookieParser());
 app.use(flash());
 
 // Session
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: false, // true if https
-        maxAge: 24 * 60 * 60 * 1000
-    },
-    store: new(createMemoryStore(session))({
-        checkPeriod: 43200000 // prune expired entries every 12h
-    }),
-}));
+// app.use(session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//         secure: false, // true if https
+//         maxAge: 24 * 60 * 60 * 1000
+//     },
+//     store: new(createMemoryStore(session))({
+//         checkPeriod: 43200000 // prune expired entries every 12h
+//     }),
+// }));
 
 // CSRF
 app.use(generateCsrfToken);
@@ -74,11 +74,10 @@ app.use(express.static(path.resolve('public')));
 // Set view engine
 edge.mount(path.resolve() + "/views");
 
-
 // Routing
 app.use(router);
 
-// Jalankan server
+// Listen
 app.listen(PORT, () => {
     console.log(`Server listening on ${BASE_URL}:${PORT}`);
 });
