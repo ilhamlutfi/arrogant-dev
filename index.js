@@ -35,18 +35,18 @@ app.use(cookieParser());
 app.use(flash());
 
 // Session
-// app.use(session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//         secure: false, // true if https
-//         maxAge: 24 * 60 * 60 * 1000
-//     },
-//     store: new(createMemoryStore(session))({
-//         checkPeriod: 43200000 // prune expired entries every 12h
-//     }),
-// }));
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // true if https
+        maxAge: 24 * 60 * 60 * 1000
+    },
+    store: new(createMemoryStore(session))({
+        checkPeriod: 43200000 // prune expired entries every 12h
+    }),
+}));
 
 // CSRF
 app.use(generateCsrfToken);
