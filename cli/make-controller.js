@@ -5,6 +5,9 @@ import path from 'path';
 import {
   fileURLToPath
 } from 'url';
+import {
+  execSync
+} from 'child_process';
 
 // Setup __dirname for ES Module
 const __filename = fileURLToPath(
@@ -15,9 +18,11 @@ const __dirname = path.dirname(__filename);
 const args = process.argv.slice(2);
 const rawName = args.find(arg => !arg.startsWith('-'));
 
+
 // Flags
 const useService = args.includes('-s') || args.includes('-sv') || args.includes('-vs');
 const useView = args.includes('-v') || args.includes('-sv') || args.includes('-vs');
+const generateModel = args.includes('-m');
 const force = args.includes('--force'); // 🆕 Tambahan
 
 // Validate name
@@ -212,3 +217,49 @@ if (useService) {
     console.log(`⚠️  Service already exists: ${serviceFilePath}`);
   }
 }
+
+// 🧬 Generate model if needed
+// if (generateModel) {
+//   const schemaPath = path.join(__dirname, '../prisma/schema.prisma');
+//   const modelName = className.replace(/Controller$/, '').trim();
+
+//   if (!fs.existsSync(schemaPath)) {
+//     console.warn(`⚠️ schema.prisma not found, skipping model generation`);
+//   } else {
+//     const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
+
+//     const modelExistsRegex = new RegExp(`\\bmodel\\s+${modelName}\\b`, 'i');
+//     if (modelExistsRegex.test(schemaContent)) {
+//       console.warn(`⚠️ Model '${modelName}' already exists in schema.prisma`);
+//     } else {
+//       const modelTemplate = `
+
+// model ${modelName} {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   // Add other columns here
+// }
+// `;
+//       fs.appendFileSync(schemaPath, modelTemplate);
+//       console.log(`✅ Model '${modelName}' added to schema.prisma`);
+//       console.log(`👉 Run: npx prisma migrate dev --name add-model-${modelName.toLowerCase()}`);
+//     }
+//   }
+// }
+
+// 🔁 Generate model by calling make-model.js
+if (generateModel) {
+  const cliPath = path.join(__dirname, 'make-model.js');
+  const modelArgs = [className.replace(/Controller$/, '')];
+  if (force) modelArgs.push('--force');
+
+  try {
+    execSync(`node "${cliPath}" ${modelArgs.join(' ')}`, {
+      stdio: 'inherit'
+    });
+  } catch (err) {
+    console.error(`❌ Failed to generate model: ${err.message}`);
+  }
+}
+

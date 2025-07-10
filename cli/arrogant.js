@@ -29,12 +29,14 @@ program
     .command('make:controller <name>')
     .option('-s, --service', 'Also create a service')
     .option('-v, --view', 'Also create views')
+    .option('-m, --model', 'Also generate model')
     .option('--force', 'Overwrite existing files')
     .description('Generate a new controller')
     .action((name, options) => {
         const args = [`"${name}"`];
         if (options.service) args.push('-s');
         if (options.view) args.push('-v');
+        if (options.model) args.push('-m');
         if (options.force) args.push('--force');
         execSync(`node "${cliPath('controller')}" ${args.join(' ')}`, {
             stdio: 'inherit'
@@ -44,9 +46,12 @@ program
 // 🧠 make:model
 program
     .command('make:model <name>')
+    .option('--force', 'Overwrite if exists')
     .description('Generate a new Prisma model schema')
-    .action((name) => {
-        execSync(`node "${cliPath('model')}" "${name}"`, {
+    .action((name, options) => {
+        const args = [`"${name}"`];
+        if (options.force) args.push('--force');
+        execSync(`node "${cliPath('model')}" ${args.join(' ')}`, {
             stdio: 'inherit'
         });
     });
