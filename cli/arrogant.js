@@ -82,6 +82,16 @@ program
         });
     });
 
+// 🧠 route:list
+    program
+        .command('route:list')
+        .description('Display all registered routes')
+        .action(() => {
+            execSync(`node "${cliPath('routes-list')}"`, {
+                stdio: 'inherit'
+            });
+        });
+
 // 🧠 run
 program
     .command('run <script>')
